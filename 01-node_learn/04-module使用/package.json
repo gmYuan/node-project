@@ -1,0 +1,23 @@
+{
+  "name": "zishui-cli",
+  "version": "2.1.0",
+  "bin": {
+    "my-cli": "./bin/www.js",
+    "my-cli1": "./bin/www.js"
+  },
+  "description": "",
+  "main": "a.js",
+  "scripts": {
+    "prem": "echo mime pre",
+    "m": "mime",
+    "postm": "echo mime post"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.1",
+    "jquery": "^2.2.0",
+    "mime": "^3.0.0"
+  }
+}

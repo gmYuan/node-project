@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<button id="button">点我</button>
+
+<body>
+
+<!-- 1 事件循环相关 -->
+
+<!-- 除了微任务的都是宏任务
+  - queueMicrotask/ Promise.then()/ MutationObserver==> 其它的都是宏任务
+
+  - 执行流程: 
+	  - 浏览器会提供一个单独的宏任务队列，默认情况下，所有的主线程执行的任务就是一个宏任务;
+		- script标签，执行这个脚本之后会产生宏任务和微任务。等待脚本执行完毕会清空所有的微任务,
+	  	再拿出一个宏任务继续执行
+    - 每次执行一个宏任务-> 清空本次产生所有微任务-> 可能要渲染16.6-> 取出下一个宏任务继续执行 -->
+
+
+<!-- 2 打印顺序和颜色的变化 -->
+<!-- <script>
+	document.body.style.background = 'red';
+  console.log(1)
+  Promise.resolve().then(()=>{
+    console.log(2)
+		// then方法的执行一定是在浏览器渲染之前发生的，所以不会看到颜色从红-黄的 变化过程
+    document.body.style.background = 'yellow'; 
+  })
+  console.log(3);
+</script>  -->
+
+
+<!-- 3 点击方法 和 点击事件的区别  -->
+<!-- <script>
+  // 用户点击按钮，会产生两个回调会放到宏任务队列中，按照宏任务的调度方式每次拿出一个来执行
+  button.addEventListener('click',()=>{
+    console.log('listener1');
+    Promise.resolve().then(()=>console.log('micro task1'))
+  })
+  button.addEventListener('click',()=>{
+    console.log('listener2');
+    Promise.resolve().then(()=>console.log('micro task2'))
+  })
+	// 而程序的点击方法，会在当前的1个宏任务中 直接执行了
+  button.click(); 
+</script> -->
+
+
+<!-- 4 事件循环和async/await  -->
+<!-- <script>
+	console.log(1);
+  async function async () {
+		console.log(2);
+		// 相当于 yield Promise.resolve(console.log(3)).then(()=> console.log(4))
+    await console.log(3); 
+    console.log(4)
+  }
+
+  setTimeout(() => {
+    console.log(5);
+  }, 0);
+
+  const promise = new Promise((resolve, reject) => {
+    console.log(6);
+    resolve(7)
+  })
+  promise.then(res => {
+    console.log(res)
+  })
+
+  async(); 
+  console.log(8);
+
+	// 1->6->2->3->8->7->4->5
+</script> -->
+
+
+<!-- 4 事件循环和连续then -->
+<script>
+// ecmascript中有一个规定 就是如果一个promise返回一个promise
+// 那么这么promise 会再次产生一个微任务
+
+Promise.resolve().then(() => { // p1
+  console.log(0);
+  // 如果返回的是一个promise 这个promise会产生两个微任务  
+	// queueMicrotask( ()=>x.then() )
+  return new Promise((resolve) => { 
+    resolve('a');
+  })
+}).then(res => {
+  console.log(res)
+})
+
+Promise.resolve().then(() => { // p2
+  console.log(1);
+}).then(() => {
+  console.log(2);
+}).then(() => {
+  console.log(3);
+}).then(() => {
+  console.log(4);
+}).then(() => {
+  console.log(5);
+})
+
+// 0, 1, 2, 3, a, 4, 5 
+</script>
+
+</body>
+</html>
