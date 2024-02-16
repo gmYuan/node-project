@@ -1,1 +1,0 @@
-module.exports = '我是a文件夹里的index.js内容'
